@@ -14,31 +14,30 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
 // Click interaction
 let squareColor = "black"
 
-draw = (mousemove) => {
-    if (!down || mousemove["target"].className !== "square") return
-    let square = mousemove["target"]
-    square.style.backgroundColor = squareColor
-}
-
-let down = false
-grid.addEventListener("mousedown",(mousedown) => {
-    let square = mousedown["target"]
-    square.style.backgroundColor = squareColor
-    down = true
-})
-grid.addEventListener("mousemove",draw)
-grid.addEventListener("mouseup",() => down = false)
+grid.addEventListener('mousemove', function(mousemove) {
+    if(mousemove.buttons == 1) {
+        mousemove.preventDefault();
+        if (mousemove["target"].className !== "square" || mousemove["target"].style.cssText) return
+        let square = mousemove["target"]
+        square.style.backgroundColor = squareColor
+    }
+   });
 
 // Eraser
+const clearBtn = document.querySelector(".clear")
+const eraser = document.querySelector(".eraser")
 
+clearBtn.addEventListener("click", () => {
 
+})
 // Clear
 const squares = document.querySelectorAll(".square")
-const clear = document.querySelector(".clear")
-clear.addEventListener("click",()=>{
+clearBtn.addEventListener("click",()=>{
     squares.forEach((square) => {
         if (square.style.cssText) {
             square.removeAttribute("style")
         }
     })
 })
+// dynamic size in flex, or create fix grid in flex 
+// bug when mouse move out of flex | bug when interact with
