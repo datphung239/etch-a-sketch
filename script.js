@@ -4,34 +4,26 @@ const gridSize = (getComputedStyle(grid).width).replace("px","")
 
 let squaresNumber = 40
 const squareSize = (gridSize/squaresNumber)
-
+// dynamic size in flex, or create fix grid in flex 
 for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
     const square = document.createElement("div")
     square.classList.add("square")
     grid.appendChild(square)
 }
 
-// Click interaction
-let squareColor = "black"
-
-grid.addEventListener('mousemove', function(mousemove) {
-    if(mousemove.buttons == 1) {
-        mousemove.preventDefault();
-        if (mousemove["target"].className !== "square" || mousemove["target"].style.cssText) return
-        let square = mousemove["target"]
-        square.style.backgroundColor = squareColor
-    }
-   });
-
 // Eraser
-const clearBtn = document.querySelector(".clear")
-const eraser = document.querySelector(".eraser")
+const squares = document.querySelectorAll(".square")
+const eraserBtn = document.querySelector(".eraser")
 
-clearBtn.addEventListener("click", () => {
-
+eraserBtn.addEventListener("click", () => {
+    if (eraserBtn.classList.contains("btn-on")) {
+        eraserBtn.classList.remove("btn-on")
+        return
+    }
+    eraserBtn.classList.add("btn-on")
 })
 // Clear
-const squares = document.querySelectorAll(".square")
+const clearBtn = document.querySelector(".clear")
 clearBtn.addEventListener("click",()=>{
     squares.forEach((square) => {
         if (square.style.cssText) {
@@ -39,5 +31,27 @@ clearBtn.addEventListener("click",()=>{
         }
     })
 })
-// dynamic size in flex, or create fix grid in flex 
-// bug when mouse move out of flex | bug when interact with
+
+// Hold to draw
+let squareColor = "black"
+function holdToDraw(event) {
+    if (event.buttons == 1) {
+        event.preventDefault()
+        // Return nothing if not inside of the box
+        if (event["target"].className !== "square" ) {
+            return
+        // Clear the grid
+        } else if (eraserBtn.classList.contains("btn-on")) {
+            if (event["target"].style.cssText) event.target.removeAttribute("style")
+        // Draw  the grid
+        } else if (!event["target"].style.cssText) {
+            event["target"].style.backgroundColor = squareColor
+        }
+    }
+}
+function clickToDraw(event) {
+    if (event["target"].className !== "square" || event["target"].style.cssText) return
+    event["target"].style.backgroundColor = squareColor
+}
+grid.addEventListener('mousemove', holdToDraw);
+grid.addEventListener('click', clickToDraw);

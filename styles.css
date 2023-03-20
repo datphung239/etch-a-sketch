@@ -32,9 +32,15 @@ body {
     flex-direction: column;
 }
 
-.button {
+.btn {
     font-size: 20px;
     padding: 5px 40px 5px 40px;
+    border: 0;
+    border-radius: 10px;
+}
+
+.btn-on {
+    background-color:rgb(62, 166, 255);
 }
 
 .grid {
@@ -52,4 +58,5 @@ body {
     width:17.5px;
     height:17.5px
 }
+
 
