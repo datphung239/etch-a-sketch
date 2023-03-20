@@ -2,7 +2,12 @@
 const grid = document.querySelector(".grid")
 const gridSize = (getComputedStyle(grid).width).replace("px","")
 
+//  Defaul background, pen, pixel
 let squaresNumber = 40
+grid.style.backgroundColor = "white"
+let squareColor = "black"
+
+
 const squareSize = (gridSize/squaresNumber)
 // dynamic size in flex, or create fix grid in flex 
 for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
@@ -17,12 +22,12 @@ const eraserBtn = document.querySelector(".eraser")
 
 eraserBtn.addEventListener("click", () => {
     if (eraserBtn.classList.contains("btn-on")) {
-        eraserBtn.classList.remove("btn-on")
-        return
+        return eraserBtn.classList.remove("btn-on")
     }
     eraserBtn.classList.add("btn-on")
 })
-// Clear
+
+// Clear all
 const clearBtn = document.querySelector(".clear")
 clearBtn.addEventListener("click",()=>{
     squares.forEach((square) => {
@@ -33,7 +38,6 @@ clearBtn.addEventListener("click",()=>{
 })
 
 // Hold to draw
-let squareColor = "black"
 function holdToDraw(event) {
     if (event.buttons == 1) {
         event.preventDefault()
@@ -55,3 +59,14 @@ function clickToDraw(event) {
 }
 grid.addEventListener('mousemove', holdToDraw);
 grid.addEventListener('click', clickToDraw);
+
+// Change background & pen color
+
+let bgColor = document.querySelector("#color-picker-bg")
+let penColor = document.querySelector("#color-picker-pen")
+bgColor.addEventListener("input", () => {
+    grid.style.backgroundColor = bgColor.value
+})
+penColor.addEventListener("input", () => {
+    squareColor = penColor.value
+})
