@@ -4,7 +4,7 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: black;
+    background-color: #181818;
 }
 
 #header {
@@ -14,22 +14,31 @@ body {
     font-family: 'Open Sans';
 }
 
-.function {
-    color: rgb(62, 166, 255);
-
-}
-
 .container {
-    width: 900px;
-    height: 900px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    gap: 30px;
+    margin-top: 70px;
+}
+
+.function {
+    background-color: #202020;
+    width: 200px;
+    height: 500px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.button {
+    font-size: 20px;
+    padding: 5px 40px 5px 40px;
 }
 
 .grid {
     background-color: white;
-    border: 4px rgb(62, 166, 255) solid;
     width: 700px;
     height: 700px;
     padding: 0;
@@ -40,4 +49,7 @@ body {
 .square {
     border:1px rgb(156, 156, 156) solid;
     box-sizing: border-box;
+    width:17.5px;
+    height:17.5px
 }
+
