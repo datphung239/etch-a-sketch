@@ -1,1 +1,13 @@
+.container {
+    border: 1px black solid;
+    width: 700px;
+    height: 700px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
 
+.square {
+    border:1px rgb(156, 156, 156) solid;
+    box-sizing: border-box;
+}
