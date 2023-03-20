@@ -2,10 +2,10 @@
 const grid = document.querySelector(".grid")
 const gridSize = (getComputedStyle(grid).width).replace("px","")
 
-//  Defaul background, pen, pixel
-let squaresNumber = 40
+//  Defaul background color, pen color, square resolution
 grid.style.backgroundColor = "white"
 let squareColor = "black"
+let squaresNumber = 40
 
 
 const squareSize = (gridSize/squaresNumber)
@@ -48,7 +48,7 @@ function holdToDraw(event) {
         } else if (eraserBtn.classList.contains("btn-on")) {
             if (event["target"].style.cssText) event.target.removeAttribute("style")
         // Draw  the grid
-        } else if (!event["target"].style.cssText) {
+        } else if (!event["target"].style.cssText!==squareColor) {
             event["target"].style.backgroundColor = squareColor
         }
     }
