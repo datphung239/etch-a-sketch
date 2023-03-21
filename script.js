@@ -19,10 +19,9 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const toggle = document.querySelector("#toggle")
 const buttons = toggle.querySelectorAll("button")
-
 toggle.addEventListener("click", (event) => {
     const toggleBtn = event.target
-    if (toggleBtn.classList.contains("btn")) {
+    if (toggleBtn.tagName === "BUTTON") {
         // Remove current clicked pen if double click
         if (toggleBtn.classList.contains("btn-on")) {
             return toggleBtn.classList.remove("btn-on")
@@ -33,8 +32,10 @@ toggle.addEventListener("click", (event) => {
                 return button.classList.remove("btn-on")
             }
         })
-        // Then turn button on for current clicked pen
-        toggleBtn.classList.add("btn-on")
+        // Then turn button on for current clicked pen, not for clear button
+        if (toggleBtn.innerText !== 'Clear') {
+            toggleBtn.classList.add("btn-on")
+        }
 
     }
 })
@@ -76,11 +77,13 @@ const eraserBtn = document.querySelector(".eraser")
 const squares = document.querySelectorAll(".square")
 const clearBtn = document.querySelector(".clear")
 clearBtn.addEventListener("click",()=>{
+    
     squares.forEach((square) => {
         if (square.style.cssText) {
             square.removeAttribute("style")
         }
     })
+    
 })
 
 // Hold to draw
@@ -100,14 +103,14 @@ function holdToDraw(event) {
         } else if (lightenBtn.classList.contains("btn-on")){
             if (event["target"].style.cssText) {
                 rgb = event["target"].style.backgroundColor.match(/\d+/g)
-                event["target"].style.cssText = `background:${rgbChange(rgb,2)}`
+                event["target"].style.cssText = `background:${rgbChange(rgb,15)}`
             }
         } else if (darkenBtn.classList.contains("btn-on")) {
             if (event["target"].style.cssText) {
                 rgb = event["target"].style.backgroundColor.match(/\d+/g)
-                event["target"].style.cssText = `background:${rgbChange(rgb,-2)}`
+                event["target"].style.cssText = `background:${rgbChange(rgb,-15)}`
             }
-        // Toggle eraser
+        // Eraser
         } else if (eraserBtn.classList.contains("btn-on")) {
             if (event["target"].style.cssText) event.target.removeAttribute("style")
         // Draw  the grid
