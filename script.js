@@ -3,8 +3,8 @@ const grid = document.querySelector(".grid")
 const gridSize = (getComputedStyle(grid).width).replace("px","")
 
 //  Defaul background color, pen color, square resolution
-grid.style.backgroundColor = "white"
-let squareColor = "black"
+grid.style.backgroundColor = "#FFFFFF"
+let squareColor = "#000000"
 let squaresNumber = 40
 
 
@@ -48,8 +48,9 @@ function holdToDraw(event) {
         } else if (eraserBtn.classList.contains("btn-on")) {
             if (event["target"].style.cssText) event.target.removeAttribute("style")
         // Draw  the grid
-        } else if (!event["target"].style.cssText!==squareColor) {
-            event["target"].style.backgroundColor = squareColor
+        } else if (event["target"].style.backgroundColor!==hexToRgb(squareColor)) {
+            event["target"].style.cssText = `background:${squareColor}`
+            console.log("Hello")
         }
     }
 }
@@ -70,3 +71,14 @@ bgColor.addEventListener("input", () => {
 penColor.addEventListener("input", () => {
     squareColor = penColor.value
 })
+
+
+// Other function
+
+function hexToRgb(hex) {
+    hex = hex.replace("#", "");
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    return "rgb(" + r + ", " + g + ", " + b + ")";
+}
