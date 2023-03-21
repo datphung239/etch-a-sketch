@@ -19,6 +19,15 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const toggle = document.querySelector("#toggle")
 const buttons = toggle.querySelectorAll("button")
+
+function resetAllBtn() {
+    buttons.forEach((button) => {
+        if (button.classList.contains("btn-on")) {
+            return button.classList.remove("btn-on")
+        }
+    })
+}
+
 toggle.addEventListener("click", (event) => {
     const toggleBtn = event.target
     if (toggleBtn.tagName === "BUTTON") {
@@ -38,11 +47,7 @@ toggle.addEventListener("click", (event) => {
             return toggleBtn.classList.remove("btn-on")
         }
         // Delete all pen with button on
-        buttons.forEach((button) => {
-            if (button.classList.contains("btn-on")) {
-                return button.classList.remove("btn-on")
-            }
-        })
+        resetAllBtn()
         // Then turn button on for current clicked pen
         toggleBtn.classList.add("btn-on")
     }
@@ -81,15 +86,27 @@ function rgbChange(rgb,level) {
 // Toggle eraser
 const eraserBtn = document.querySelector(".eraser")
 
-// Clear all
+// Clear all (Clear the grid only)
 const squares = document.querySelectorAll(".square")
 const clearBtn = document.querySelector(".clear")
-clearBtn.addEventListener("click",()=>{
+function resetAllSquare() {
     squares.forEach((square) => {
         if (square.style.cssText) {
             square.removeAttribute("style")
         }
     })
+}
+clearBtn.addEventListener("click",resetAllSquare)
+
+// Reset all (Clear grid, pen, background to default)
+const resetBtn = document.querySelector(".reset")
+resetBtn.addEventListener("click",()=>{
+    bgColor.value = "#ffffff"
+    penColor.value = "#202020"
+    grid.style.backgroundColor = "#FFFFFF"
+    squareColor = "#000000"
+    resetAllSquare()
+    resetAllBtn()
 })
 
 // Hold to draw
@@ -133,7 +150,6 @@ grid.addEventListener('mousemove', holdToDraw);
 grid.addEventListener('click', clickToDraw);
 
 // Change background & pen color
-
 let bgColor = document.querySelector("#color-picker-bg")
 let penColor = document.querySelector("#color-picker-pen")
 bgColor.addEventListener("input", () => {
@@ -141,11 +157,7 @@ bgColor.addEventListener("input", () => {
 })
 penColor.addEventListener("input", () => {
     squareColor = penColor.value
-    buttons.forEach((button) => {
-        if (button.classList.contains("btn-on")) {
-            return button.classList.remove("btn-on")
-        }
-    })
+    resetAllBtn()
 })
 
 // Others function
