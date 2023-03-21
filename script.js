@@ -55,7 +55,19 @@ const rainbowCorArr = ["#9400D3","#4B0082","#0000FF","#00FF00","#FFFF00","#FF7F0
 function rainbowColor() {
     return rainbowCorArr[Math.floor(Math.random()*rainbowCorArr.length)]
 }
+// Toggle Lighten & darken
+const lightenBtn = document.querySelector(".lighten")
+const darkenBtn = document.querySelector(".darken")
 
+function rgbChange(rgb,level) {
+    r = parseInt(rgb[0])
+    g = parseInt(rgb[1])
+    b = parseInt(rgb[2])
+    if (r<=255) r += level
+    if (g<=255) g += level
+    if (b<=255) b += level
+    return `rgb(${r}, ${g}, ${b})`
+}
 
 // Toggle eraser
 const eraserBtn = document.querySelector(".eraser")
@@ -72,7 +84,7 @@ clearBtn.addEventListener("click",()=>{
 })
 
 // Hold to draw
-function holdToDraw(event) {randColor
+function holdToDraw(event) {
     if (event.buttons == 1) {
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
@@ -84,11 +96,22 @@ function holdToDraw(event) {randColor
         // Toggle random color 
         } else if (randomBtn.classList.contains("btn-on")) {
             event["target"].style.cssText = `background:${randColor()}`
+        // Toggle random lighten 
+        } else if (lightenBtn.classList.contains("btn-on")){
+            if (event["target"].style.cssText) {
+                rgb = event["target"].style.backgroundColor.match(/\d+/g)
+                event["target"].style.cssText = `background:${rgbChange(rgb,2)}`
+            }
+        } else if (darkenBtn.classList.contains("btn-on")) {
+            if (event["target"].style.cssText) {
+                rgb = event["target"].style.backgroundColor.match(/\d+/g)
+                event["target"].style.cssText = `background:${rgbChange(rgb,-2)}`
+            }
         // Toggle eraser
         } else if (eraserBtn.classList.contains("btn-on")) {
             if (event["target"].style.cssText) event.target.removeAttribute("style")
         // Draw  the grid
-        } else if (event["target"].style.backgroundColor!==hexToRgb(squareColor)) {
+        } else if (event["target"].style.backgroundColor!==hexToRgb(squareColor)) { 
             event["target"].style.cssText = `background:${squareColor}`
         } 
     }
