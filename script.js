@@ -135,6 +135,11 @@ bgColor.addEventListener("input", () => {
 })
 penColor.addEventListener("input", () => {
     squareColor = penColor.value
+    buttons.forEach((button) => {
+        if (button.classList.contains("btn-on")) {
+            return button.classList.remove("btn-on")
+        }
+    })
 })
 
 
