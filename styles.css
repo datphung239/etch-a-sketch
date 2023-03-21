@@ -25,20 +25,35 @@ body {
 .function {
     background-color: #202020;
     width: 300px;
-    height: 500px;
+    height: 700px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
 }
 
-.colorpicker {
+#toggle {
+    display: flex;
+    flex-direction: column;
+    gap:30px
+
+}
+#toggle .title{
+    background-color: blue;
+    color: white;
+    font-weight: bolder;
+    text-align: center;
+    font-size:30px
+}
+
+
+.color-picker {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-
 }
+
 label {
     color: white;
 }
