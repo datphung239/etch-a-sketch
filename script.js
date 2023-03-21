@@ -16,11 +16,9 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
     grid.appendChild(square)
 }
 
-
-
-// Toggle (Use for rainbow, eraser, lighten, shading pen)
+// Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const toggle = document.querySelector("#toggle")
-buttons = toggle.querySelectorAll("button")
+const buttons = toggle.querySelectorAll("button")
 
 toggle.addEventListener("click", (event) => {
     const toggleBtn = event.target
@@ -35,34 +33,35 @@ toggle.addEventListener("click", (event) => {
                 return button.classList.remove("btn-on")
             }
         })
-        // Turn button on for current clicked pen
+        // Then turn button on for current clicked pen
         toggleBtn.classList.add("btn-on")
 
     }
 })
+// Toggle random
+const randomBtn = document.querySelector(".random")
 
-// // Rainbow pen
-// const rainbowBtn = document.querySelector(".rainbow")
-// rainbowBtn.addEventListener("click", () => {
-//     if (rainbowBtn.classList.contains("btn-on")) {
-//         return rainbowBtn.classList.remove("btn-on")
-//     }
-//     rainbowBtn.classList.add("btn-on")
-// })
+function randColor() { // Function return rancom color
+    const rdC1 = Math.floor(Math.random() * 256)
+    const rdC2 = Math.floor(Math.random() * 256)
+    const rdC3 = Math.floor(Math.random() * 256)
+    return `rgb(${rdC1}, ${rdC2}, ${rdC3})`
+}
+
+// Toggle rainbow
+const rainbowBtn = document.querySelector(".rainbow")
+const rainbowCorArr = ["#9400D3","#4B0082","#0000FF","#00FF00","#FFFF00","#FF7F00","#FF0000",]
+
+function rainbowColor() {
+    return rainbowCorArr[Math.floor(Math.random()*rainbowCorArr.length)]
+}
 
 
-// // Eraser
-// const squares = document.querySelectorAll(".square")
-// const eraserBtn = document.querySelector(".eraser")
-
-// eraserBtn.addEventListener("click", () => {
-//     if (eraserBtn.classList.contains("btn-on")) {
-//         return eraserBtn.classList.remove("btn-on")
-//     }
-//     eraserBtn.classList.add("btn-on")
-// })
+// Toggle eraser
+const eraserBtn = document.querySelector(".eraser")
 
 // Clear all
+const squares = document.querySelectorAll(".square")
 const clearBtn = document.querySelector(".clear")
 clearBtn.addEventListener("click",()=>{
     squares.forEach((square) => {
@@ -73,19 +72,25 @@ clearBtn.addEventListener("click",()=>{
 })
 
 // Hold to draw
-function holdToDraw(event) {
+function holdToDraw(event) {randColor
     if (event.buttons == 1) {
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
         if (event["target"].className !== "square" ) {
             return
-        // Clear the grid
-        // } else if (eraserBtn.classList.contains("btn-on")) {
-        //     if (event["target"].style.cssText) event.target.removeAttribute("style")
+        // Toggle rainbow color 
+        } else if (rainbowBtn.classList.contains("btn-on")) {
+            event["target"].style.cssText = `background:${rainbowColor()}`
+        // Toggle random color 
+        } else if (randomBtn.classList.contains("btn-on")) {
+            event["target"].style.cssText = `background:${randColor()}`
+        // Toggle eraser
+        } else if (eraserBtn.classList.contains("btn-on")) {
+            if (event["target"].style.cssText) event.target.removeAttribute("style")
         // Draw  the grid
         } else if (event["target"].style.backgroundColor!==hexToRgb(squareColor)) {
             event["target"].style.cssText = `background:${squareColor}`
-        }
+        } 
     }
 }
 function clickToDraw(event) {
@@ -107,7 +112,7 @@ penColor.addEventListener("input", () => {
 })
 
 
-// Other function
+// Others function
 
 function hexToRgb(hex) {
     hex = hex.replace("#", "");
