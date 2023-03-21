@@ -10,29 +10,42 @@
 </head>
 <body>
     <div id="header">Etch-a-sketch</div>
-    <div class="container">
-        <div class="function">
-            <div class="color-picker">
-                <!-- New to learn -->
-                <label for="color-picker-pen">Pen Color</label>
-                <input type="color" id="color-picker-pen" value =  "#202020" >
+    <div class="main">
+        <div class="container0">
+            <div class="reset">
+                <button class="content">Reset</button>
             </div>
-            <div class="color-picker">
-                <!-- New to learn -->
-                <label for="color-picker-bg">Background Color</label>
-                <input type="color" id="color-picker-bg" value = "#ffffff" > 
+            <div class="change-color">
+                <div class="color-picker">
+                    <!-- New to learn -->
+                    <label for="color-picker-pen">Pen Color</label>
+                    <input type="color" id="color-picker-pen" value =  "#202020" >
+                </div>
+                <div class="color-picker">
+                    <!-- New to learn -->
+                    <label for="color-picker-bg">Background Color</label>
+                    <input type="color" id="color-picker-bg" value = "#ffffff" > 
+                </div>
             </div>
-            <div id="toggle">
-                <div class="title">Switch Pen</div>
-                <button class="random btn">Random Color</button>
-                <button class="rainbow btn">Rainbow</button>
-                <button class="lighten btn">Lighten</button>
-                <button class="shading btn">Shading</button>
-                <button class="eraser btn">Eraser</button>
-            </div>
-            <button class="clear btn">Clear</button>
         </div>
-        <div class="grid"></div>
+        <div class="container">
+            <div id="toggle">
+                <div id="fill">
+                    <div class="title">Color Fill</div>
+                    <button class="area">Specific Area</button>
+                    <button class="full">Full Area</button>
+                </div>
+                <div id="draw">
+                    <div class="title">Switch Pen</div>
+                    <button class="random">Random</button>
+                    <button class="rainbow">Rainbow</button>
+                    <button class="lighten">Lighten</button>
+                    <button class="darken">Darken</button>
+                    <button class="eraser">Eraser</button>
+                </div>
+                <button class="clear">Clear</button>
+            </div>
+            <div class="grid"></div>
     </div>
 </body>
 </html>
