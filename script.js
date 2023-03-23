@@ -1,11 +1,12 @@
 const grid = document.querySelector(".grid")
-
+const page = document.querySelector(".main")
 //  Default background color, pen color, number of squares inside grid
 grid.style.backgroundColor = "#FFFFFF"
 let squareColor = "#000000"
 function createSquare() {
     const square = document.createElement("div")
     square.classList.add("square")
+    square.classList.add("square-border")
     grid.appendChild(square)
 }
 let squaresNumber = 23
@@ -19,7 +20,7 @@ let squares = document.querySelectorAll(".square")
 gridSizeBar = document.querySelector(".size-adjust #slider")
 function changeGridBadge(squaresNumber) {
     gridSizeBadge = document.querySelector(".size-adjust p")
-    gridSizeBadge.innerText = `${squaresNumber} x ${squaresNumber}`
+    gridSizeBadge.innerText = `Grid Size: ${squaresNumber} x ${squaresNumber}`
 }
 function changeGrid() {
     // Erase current content
@@ -28,7 +29,7 @@ function changeGrid() {
     squaresNumber = this.value
     if (squaresNumber === undefined) {
         squaresNumber = 23 // For reset default
-        gridSizeBar.value = ""
+        gridSizeBar.value = "23"
     }
     // Change badge text
     changeGridBadge(squaresNumber)
@@ -50,11 +51,11 @@ gridSizeBar.addEventListener("input",(event) => {
     changeGridBadge(squaresNumber)
 })
 gridSizeBar.addEventListener("mouseup",changeGrid)
+// Remove, Add gridlines
+const gridLines = document.querySelector("#grid-line")
 
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
-const toggle = document.querySelector("#toggle")
-const buttons = toggle.querySelectorAll("button")
-
+const buttons = page.querySelectorAll("button")
 function resetAllBtn() {
     buttons.forEach((button) => {
         if (button.classList.contains("btn-on")) {
@@ -63,9 +64,9 @@ function resetAllBtn() {
     })
 }
 
-toggle.addEventListener("click", (event) => {
-    const toggleBtn = event.target
-    if (toggleBtn.tagName === "BUTTON") {
+page.addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+        const toggleBtn = event.target
         // Work with clear feature
         // If current select pen is lighten, darken & eraser then remove
         if (toggleBtn.innerText === 'Clear') {
@@ -76,6 +77,22 @@ toggle.addEventListener("click", (event) => {
                 }
             })
             return
+        } else if (toggleBtn.innerText === 'Reset') {
+            return
+        // If remove glid lines clicked
+        } else if (toggleBtn.innerText.includes("Remove")) {
+            gridLines.innerText = "Show Grid Lines"
+            squares.forEach((square) => {
+                square.classList.remove("square-border")
+            })
+            toggleBtn.classList.remove("btn-on")
+            return
+        // If show glid lines clicked
+        } else if (toggleBtn.innerText.includes("Show")) {
+            gridLines.innerText = "Remove Grid Lines"
+            squares.forEach((square) => {
+                square.classList.add("square-border")
+            })
         }
         // Remove current clicked pen if double click
         if (toggleBtn.classList.contains("btn-on")) {
@@ -139,7 +156,7 @@ function resetAllSquare() {
 clearBtn.addEventListener("click",resetAllSquare)
 
 // Reset all (Clear grid, pen, background to default)
-const resetBtn = document.querySelector(".reset .content")
+const resetBtn = document.querySelector(".reset")
 resetBtn.addEventListener("click",()=>{
     bgColor.value = "#ffffff"
     penColor.value = "#202020"
@@ -153,9 +170,10 @@ resetBtn.addEventListener("click",()=>{
 // Hold to draw
 function toDraw(event) {
     if (event.buttons == 1) {
+        
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
-        if (event["target"].className !== "square" ) {
+        if (!(event["target"].className).includes("square")) {
             return
         // Fullfill
         } else if (fullFillBtn.classList.contains("btn-on")) {
