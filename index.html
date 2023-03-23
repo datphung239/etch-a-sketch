@@ -12,31 +12,36 @@
     <div id="header">Etch-a-sketch</div>
     <div class="main">
         <div class="container0">
-            <div class="reset">
-                <button class="content">Reset</button>
+            <div class="toggle">
+                <div class="reset">
+                    <button class="content">Reset</button>
+                </div>
+                <button class="clear">Clear</button>
             </div>
             <div class="default">
-                <div class="color-picker">
-                    <!-- New to learn -->
-                    <label for="color-picker-pen">Pen Color</label>
-                    <input type="color" id="color-picker-pen" value = "#202020" >
-                </div>
-                <div class="grid-size">
-                    <label for="badge">Grid Size</label>
-                    <div class="size-adjust">
-                        <p>23 x 23</p>
-                        <input type="range" id="slider" min="0" max="60" value="23">
+                <div class="pen-bg-picker">
+                    <div class="color-picker">
+                        <!-- New to learn -->
+                        <input type="color" id="color-picker-pen" value = "#202020" >
+                        <label for="color-picker-pen">Pen Color</label>
+                    </div>
+                    <div class="color-picker">
+                        <!-- New to learn -->
+                        <input type="color" id="color-picker-bg" value = "#ffffff" > 
+                        <label for="color-picker-bg">Background Color</label>
                     </div>
                 </div>
-                <div class="color-picker">
-                    <!-- New to learn -->
-                    <label for="color-picker-bg">Background Color</label>
-                    <input type="color" id="color-picker-bg" value = "#ffffff" > 
+                <button id="grid-line">Show Grid Lines</button>
+                <div class="grid-size">
+                    <div class="size-adjust">
+                        <p>Grid Size: 23 x 23</p>
+                        <input type="range" id="slider" min="1" max="60" value="23">
+                    </div>
                 </div>
             </div>
         </div>
         <div class="container">
-            <div id="toggle">
+            <div class="toggle">
                 <div id="fill">
                     <div class="title">Color Fill</div>
                     <button class="area">Specific Area</button>
@@ -50,7 +55,7 @@
                     <button class="darken">Darken</button>
                     <button class="eraser">Eraser</button>
                 </div>
-                <button class="clear">Clear</button>
+                
             </div>
             <div class="grid"></div>
     </div>
