@@ -1,20 +1,55 @@
-// Create grid and squares
 const grid = document.querySelector(".grid")
-const gridSize = (getComputedStyle(grid).width).replace("px","")
 
-//  Defaul background color, pen color, square resolution
+//  Default background color, pen color, number of squares inside grid
 grid.style.backgroundColor = "#FFFFFF"
 let squareColor = "#000000"
-let squaresNumber = 40
-
-
-const squareSize = (gridSize/squaresNumber)
-// dynamic size in flex, or create fix grid in flex 
-for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
+function createSquare() {
     const square = document.createElement("div")
     square.classList.add("square")
     grid.appendChild(square)
 }
+let squaresNumber = 23
+grid.style.cssText +=  `grid-template-columns: repeat(${squaresNumber}, 1fr)`
+for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
+    createSquare()
+}
+let squares = document.querySelectorAll(".square")
+
+// Change grid size
+gridSizeBar = document.querySelector(".size-adjust #slider")
+function changeGridBadge(squaresNumber) {
+    gridSizeBadge = document.querySelector(".size-adjust p")
+    gridSizeBadge.innerText = `${squaresNumber} x ${squaresNumber}`
+}
+function changeGrid() {
+    // Erase current content
+    resetAllSquare()
+    // Input changed
+    squaresNumber = this.value
+    if (squaresNumber === undefined) {
+        squaresNumber = 23 // For reset default
+        gridSizeBar.value = ""
+    }
+    // Change badge text
+    changeGridBadge(squaresNumber)
+    // Reset grid
+    grid.style.cssText +=  `grid-template-columns: repeat(${squaresNumber}, 1fr)`
+    // Append or remove squares
+    while (squares.length < squaresNumber*squaresNumber-1) {
+        squares = document.querySelectorAll(".square")
+        createSquare()
+    }
+    while (squares.length > squaresNumber*squaresNumber) {
+        squares = document.querySelectorAll(".square")
+        squares[0].parentNode.removeChild(squares[0])
+    }
+}
+
+gridSizeBar.addEventListener("input",(event) => {
+    squaresNumber = event["srcElement"].value
+    changeGridBadge(squaresNumber)
+})
+gridSizeBar.addEventListener("mouseup",changeGrid)
 
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const toggle = document.querySelector("#toggle")
@@ -52,6 +87,11 @@ toggle.addEventListener("click", (event) => {
         toggleBtn.classList.add("btn-on")
     }
 })
+// Color fill specific area
+
+// Color fill full area
+const fullFillBtn = document.querySelector("#fill .full")
+
 // Toggle random
 const randomBtn = document.querySelector(".random")
 
@@ -87,7 +127,7 @@ function rgbChange(rgb,level) {
 const eraserBtn = document.querySelector(".eraser")
 
 // Clear all (Clear the grid only)
-const squares = document.querySelectorAll(".square")
+
 const clearBtn = document.querySelector(".clear")
 function resetAllSquare() {
     squares.forEach((square) => {
@@ -99,7 +139,7 @@ function resetAllSquare() {
 clearBtn.addEventListener("click",resetAllSquare)
 
 // Reset all (Clear grid, pen, background to default)
-const resetBtn = document.querySelector(".reset")
+const resetBtn = document.querySelector(".reset .content")
 resetBtn.addEventListener("click",()=>{
     bgColor.value = "#ffffff"
     penColor.value = "#202020"
@@ -107,15 +147,21 @@ resetBtn.addEventListener("click",()=>{
     squareColor = "#000000"
     resetAllSquare()
     resetAllBtn()
+    changeGrid()
 })
 
 // Hold to draw
-function holdToDraw(event) {
+function toDraw(event) {
     if (event.buttons == 1) {
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
         if (event["target"].className !== "square" ) {
             return
+        // Fullfill
+        } else if (fullFillBtn.classList.contains("btn-on")) {
+            squares.forEach((square) => {
+                if (!square.style.backgroundColor) square.style.backgroundColor = penColor.value
+            })
         // Toggle rainbow color 
         } else if (rainbowBtn.classList.contains("btn-on")) {
             event["target"].style.cssText = `background:${rainbowColor()}`
@@ -142,12 +188,9 @@ function holdToDraw(event) {
         } 
     }
 }
-function clickToDraw(event) {
-    if (event["target"].className !== "square" || event["target"].style.cssText) return
-    event["target"].style.backgroundColor = squareColor
-}
-grid.addEventListener('mousemove', holdToDraw);
-grid.addEventListener('click', clickToDraw);
+
+grid.addEventListener('mousemove', toDraw);
+grid.addEventListener('mousedown', toDraw);
 
 // Change background & pen color
 let bgColor = document.querySelector("#color-picker-bg")
@@ -157,11 +200,14 @@ bgColor.addEventListener("input", () => {
 })
 penColor.addEventListener("input", () => {
     squareColor = penColor.value
-    resetAllBtn()
+    buttons.forEach((button) => {
+        if (button.classList[0] !== "area" && button.classList[0] !== "full") {
+            return button.classList.remove("btn-on")
+        }
+    })
 })
 
 // Others function
-
 function hexToRgb(hex) {
     hex = hex.replace("#", "");
     var r = parseInt(hex.substring(0, 2), 16);
