@@ -9,7 +9,7 @@ function createSquare() {
     square.classList.add("square-border")
     grid.appendChild(square)
 }
-let squaresNumber = 23
+let squaresNumber = 30
 grid.style.cssText +=  `grid-template-columns: repeat(${squaresNumber}, 1fr)`
 for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
     createSquare()
@@ -28,8 +28,8 @@ function changeGrid() {
     // Input changed
     squaresNumber = this.value
     if (squaresNumber === undefined) {
-        squaresNumber = 23 // For reset default
-        gridSizeBar.value = "23"
+        squaresNumber = 30 // For reset default
+        gridSizeBar.value = "30"
     }
     // Change badge text
     changeGridBadge(squaresNumber)
@@ -40,10 +40,11 @@ function changeGrid() {
         squares = document.querySelectorAll(".square")
         createSquare()
     }
-    while (squares.length > squaresNumber*squaresNumber) {
+    while (squares.length > squaresNumber*squaresNumber+1) {
         squares = document.querySelectorAll(".square")
         squares[0].parentNode.removeChild(squares[0])
     }
+    squares = document.querySelectorAll(".square")
 }
 
 gridSizeBar.addEventListener("input",(event) => {
@@ -177,6 +178,7 @@ function toDraw(event) {
             return
         // Fullfill
         } else if (fullFillBtn.classList.contains("btn-on")) {
+            console.log(squares.length)
             squares.forEach((square) => {
                 if (!square.style.backgroundColor) square.style.backgroundColor = penColor.value
             })
