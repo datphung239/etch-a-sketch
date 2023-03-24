@@ -15,6 +15,14 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
     createSquare()
 }
 let squares = document.querySelectorAll(".square")
+// Remove, Add gridlines
+const gridLines = document.querySelector("#grid-line")
+
+function changeGridLines() {
+    squares.forEach((square) => {
+        square.classList.remove("square-border")
+    })
+} 
 
 // Change grid size
 gridSizeBar = document.querySelector(".size-adjust #slider")
@@ -45,6 +53,8 @@ function changeGrid() {
         squares[0].parentNode.removeChild(squares[0])
     }
     squares = document.querySelectorAll(".square")
+    if (!gridLines.classList.contains("btn-on")) changeGridLines()
+    
 }
 
 gridSizeBar.addEventListener("input",(event) => {
@@ -52,8 +62,7 @@ gridSizeBar.addEventListener("input",(event) => {
     changeGridBadge(squaresNumber)
 })
 gridSizeBar.addEventListener("mouseup",changeGrid)
-// Remove, Add gridlines
-const gridLines = document.querySelector("#grid-line")
+
 
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const buttons = page.querySelectorAll("button")
@@ -83,9 +92,7 @@ page.addEventListener("click", (event) => {
         // If remove glid lines clicked
         } else if (toggleBtn.innerText.includes("Remove")) {
             gridLines.innerText = "Show Grid Lines"
-            squares.forEach((square) => {
-                square.classList.remove("square-border")
-            })
+            changeGridLines()
             toggleBtn.classList.remove("btn-on")
             return
         // If show glid lines clicked
@@ -171,17 +178,17 @@ resetBtn.addEventListener("click",()=>{
 // Hold to draw
 function toDraw(event) {
     if (event.buttons == 1) {
-        
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
         if (!(event["target"].className).includes("square")) {
             return
         // Fullfill
         } else if (fullFillBtn.classList.contains("btn-on")) {
-            console.log(squares.length)
-            squares.forEach((square) => {
-                if (!square.style.backgroundColor) square.style.backgroundColor = penColor.value
-            })
+            if (!event["target"].style.cssText) {
+                squares.forEach((square) => {
+                    if (!square.style.backgroundColor) square.style.backgroundColor = penColor.value
+                })
+            }
         // Toggle rainbow color 
         } else if (rainbowBtn.classList.contains("btn-on")) {
             event["target"].style.cssText = `background:${rainbowColor()}`
