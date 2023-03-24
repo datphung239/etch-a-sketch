@@ -68,8 +68,6 @@ body {
     gap: 10px;
 }
 
-
-
 .size-adjust {
     display: flex;
     gap: 0px;
@@ -81,7 +79,6 @@ body {
     color: #FFFFFF;
     font-weight: 600;
 }
-
 
 label {
     color: white;
@@ -123,7 +120,7 @@ label {
     font-size:50px
 }
 
-button, #grid-line {
+button, .grid-line {
     font-size: 20px;
     padding: 5px 40px 5px 40px;
     border: 0;
