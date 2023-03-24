@@ -16,13 +16,18 @@ for (sq=1;sq<=squaresNumber*squaresNumber;sq++) {
 }
 let squares = document.querySelectorAll(".square")
 // Remove, Add gridlines
-const gridLines = document.querySelector("#grid-line")
+const gridLines = document.querySelector(".grid-line")
 
-function changeGridLines() {
+function removeGridLines() {
     squares.forEach((square) => {
         square.classList.remove("square-border")
     })
 } 
+function addGridLines() {
+    squares.forEach((square) => {
+        square.classList.add("square-border")
+    })
+}
 
 // Change grid size
 gridSizeBar = document.querySelector(".size-adjust #slider")
@@ -30,7 +35,7 @@ function changeGridBadge(squaresNumber) {
     gridSizeBadge = document.querySelector(".size-adjust p")
     gridSizeBadge.innerText = `Grid Size: ${squaresNumber} x ${squaresNumber}`
 }
-function changeGrid() {
+function changeGridSize() {
     // Erase current content
     resetAllSquare()
     // Input changed
@@ -53,25 +58,27 @@ function changeGrid() {
         squares[0].parentNode.removeChild(squares[0])
     }
     squares = document.querySelectorAll(".square")
-    if (!gridLines.classList.contains("btn-on")) changeGridLines()
-    
+    // If gridlines turn off then remove the rest 
+    if (!gridLines.classList.contains("btn-on")) removeGridLines()
 }
 
 gridSizeBar.addEventListener("input",(event) => {
     squaresNumber = event["srcElement"].value
     changeGridBadge(squaresNumber)
 })
-gridSizeBar.addEventListener("mouseup",changeGrid)
+gridSizeBar.addEventListener("mouseup",changeGridSize)
 
 
 // Toggle (Use for rainbow, random, lighten, shading pen, eraser)
 const buttons = page.querySelectorAll("button")
-function resetAllBtn() {
-    buttons.forEach((button) => {
-        if (button.classList.contains("btn-on")) {
-            return button.classList.remove("btn-on")
-        }
-    })
+function resetAllBtn(event) {
+    if (!event.classList.value.includes("grid-line")) {
+        buttons.forEach((button) => {
+            if (!button.classList.value.includes("grid-line")) {
+                button.classList.remove("btn-on")
+            }
+        })
+    }
 }
 
 page.addEventListener("click", (event) => {
@@ -88,31 +95,89 @@ page.addEventListener("click", (event) => {
             })
             return
         } else if (toggleBtn.innerText === 'Reset') {
+            resetAll(event)
             return
         // If remove glid lines clicked
         } else if (toggleBtn.innerText.includes("Remove")) {
             gridLines.innerText = "Show Grid Lines"
-            changeGridLines()
+            removeGridLines()
             toggleBtn.classList.remove("btn-on")
             return
         // If show glid lines clicked
         } else if (toggleBtn.innerText.includes("Show")) {
             gridLines.innerText = "Remove Grid Lines"
-            squares.forEach((square) => {
-                square.classList.add("square-border")
-            })
+            addGridLines()
         }
         // Remove current clicked pen if double click
         if (toggleBtn.classList.contains("btn-on")) {
             return toggleBtn.classList.remove("btn-on")
         }
-        // Delete all pen with button on
-        resetAllBtn()
+        // Delete all pen with button on (Reset)
+        resetAllBtn(event.target)
         // Then turn button on for current clicked pen
         toggleBtn.classList.add("btn-on")
     }
 })
 // Color fill specific area
+const areaFill = document.querySelector(".area") 
+function toFill(event) {
+    // Get squares around target square and put on arrays
+    arrAroundSqr = (element)=> {
+        const squareIdx = Array.from(
+            element.parentElement.children
+          ).indexOf(element);
+        topSqr = squares[squareIdx-squaresNumber]
+        botSqr = squares[squareIdx+squaresNumber]
+        leftTopSqr = squares[squareIdx-squaresNumber - 1]
+        rightTopSqr = squares[squareIdx-squaresNumber + 1]
+        leftBotSqr = squares[squareIdx+squaresNumber - 1]
+        rightBotSqr = squares[squareIdx+squaresNumber + 1]
+        if (squareIdx % squaresNumber == 0 ) {
+            leftSqr = undefined
+            leftTopSqr = undefined
+            leftBotSqr = undefined
+        } else {
+            leftSqr = squares[squareIdx - 1]
+        }
+        if ((squareIdx + 1) % squaresNumber == 0) {
+            rightSqr = undefined
+            rightTopSqr = undefined
+            rightBotSqr = undefined
+        } else {
+            rightSqr = squares[squareIdx + 1]
+        }
+        arrs =  [element,leftTopSqr,topSqr,rightTopSqr,rightSqr,rightBotSqr,botSqr,leftBotSqr,leftSqr]
+        cleanArrs = []
+        arrs.forEach((arr) => {
+            if (arr !== undefined) {
+                if (!arr.style.backgroundColor) {
+                    cleanArrs.push(arr)
+                }
+            }
+        })
+
+        return cleanArrs
+    }
+    // Fill
+
+    /*
+    Bug : Specific Area not working well .... 
+    */
+    let sqrArr = arrAroundSqr(event)
+    let i = 0
+    while (i< 10) {
+        sqrArr.forEach((sqr) => {
+            sqr.style.cssText = `background:${squareColor}`
+            arrAroundSqr(sqr).forEach((_) => {
+                if (!sqrArr.includes(_)){
+                    sqrArr.push(_)
+                }  
+            })
+        })
+        i++
+    }
+}
+
 
 // Color fill full area
 const fullFillBtn = document.querySelector("#fill .full")
@@ -165,15 +230,20 @@ clearBtn.addEventListener("click",resetAllSquare)
 
 // Reset all (Clear grid, pen, background to default)
 const resetBtn = document.querySelector(".reset")
-resetBtn.addEventListener("click",()=>{
+function resetAll(event) {
     bgColor.value = "#ffffff"
     penColor.value = "#202020"
     grid.style.backgroundColor = "#FFFFFF"
     squareColor = "#000000"
     resetAllSquare()
-    resetAllBtn()
-    changeGrid()
-})
+    resetAllBtn(event.target)
+    changeGridSize()
+    if (!squares[0].classList.value.includes("square-border")) {
+        addGridLines()
+    }
+    gridLines.classList.add("btn-on")
+    gridLines.innerText = "Remove Grid Lines"
+}
 
 // Hold to draw
 function toDraw(event) {
@@ -181,7 +251,10 @@ function toDraw(event) {
         event.preventDefault() // New to learn
         // Return nothing if not inside of the box
         if (!(event["target"].className).includes("square")) {
-            return
+            return 
+        // Areafill
+        } else if (areaFill.classList.contains("btn-on")) {
+            toFill(event["target"])
         // Fullfill
         } else if (fullFillBtn.classList.contains("btn-on")) {
             if (!event["target"].style.cssText) {
@@ -228,7 +301,7 @@ bgColor.addEventListener("input", () => {
 penColor.addEventListener("input", () => {
     squareColor = penColor.value
     buttons.forEach((button) => {
-        if (button.classList[0] !== "area" && button.classList[0] !== "full") {
+        if (button.classList[0] !== "area" && button.classList[0] !== "full" && button.classList[0] !== "grid-line") {
             return button.classList.remove("btn-on")
         }
     })
