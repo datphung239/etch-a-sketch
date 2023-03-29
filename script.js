@@ -1,6 +1,7 @@
 const grid = document.querySelector(".grid");
 const page = document.querySelector(".main");
-//  Default background color, pen color, number of squares inside grid
+
+/* Default background color, pen color, number of squares inside grid */
 grid.style.backgroundColor = "#FFFFFF";
 let squareColor = "#000000";
 function createSquare() {
@@ -15,7 +16,8 @@ for (sq = 1; sq <= squaresNumber * squaresNumber; sq++) {
   createSquare();
 }
 let squares = document.querySelectorAll(".square");
-// Remove, Add gridlines
+
+/* Remove, Add gridlines */
 const gridLines = document.querySelector(".grid-line");
 
 function removeGridLines() {
@@ -29,7 +31,7 @@ function addGridLines() {
   });
 }
 
-// Change grid size
+/* Change grid size & badge */
 gridSizeBar = document.querySelector(".size-adjust #slider");
 function changeGridBadge(squaresNumber) {
   gridSizeBadge = document.querySelector(".size-adjust p");
@@ -68,7 +70,7 @@ gridSizeBar.addEventListener("input", (event) => {
 });
 gridSizeBar.addEventListener("mouseup", changeGridSize);
 
-// Toggle (Use for rainbow, random, lighten, shading pen, eraser)
+/* Turn on or off button Function (Use for rainbow, random, lighten, shading pen, eraser) */
 const buttons = page.querySelectorAll("button");
 function resetAllBtn(event) {
   if (!event.classList.value.includes("grid-line")) {
@@ -79,8 +81,7 @@ function resetAllBtn(event) {
     });
   }
 }
-
-page.addEventListener("click", (event) => {
+function buttonOnOff(event) {
   if (event.target.tagName === "BUTTON") {
     const toggleBtn = event.target;
     // Work with clear feature
@@ -120,21 +121,21 @@ page.addEventListener("click", (event) => {
     // Then turn button on for current clicked pen
     toggleBtn.classList.add("btn-on");
   }
-});
-// Color fill specific area
+}
+page.addEventListener("click", buttonOnOff);
+
+/* Color fill specific area */
 const areaFill = document.querySelector(".area");
 function toFill(event) {
-  // Get squares around target square and put on arrays
-  arrAroundSqr = (element) => {
-    const squareIdx = Array.from(element.parentElement.children).indexOf(
-      element
-    );
+  function extendSqrs(_) {
+    const squareIdx = Array.from(_.parentElement.children).indexOf(_);
     topSqr = squares[squareIdx - squaresNumber];
     botSqr = squares[squareIdx + squaresNumber];
     leftTopSqr = squares[squareIdx - squaresNumber - 1];
     rightTopSqr = squares[squareIdx - squaresNumber + 1];
     leftBotSqr = squares[squareIdx + squaresNumber - 1];
     rightBotSqr = squares[squareIdx + squaresNumber + 1];
+    // If cursor on ther right corner
     if (squareIdx % squaresNumber == 0) {
       leftSqr = undefined;
       leftTopSqr = undefined;
@@ -142,6 +143,7 @@ function toFill(event) {
     } else {
       leftSqr = squares[squareIdx - 1];
     }
+    // If cursor on the left corner
     if ((squareIdx + 1) % squaresNumber == 0) {
       rightSqr = undefined;
       rightTopSqr = undefined;
@@ -149,8 +151,60 @@ function toFill(event) {
     } else {
       rightSqr = squares[squareIdx + 1];
     }
-    arrs = [
-      element,
+    function caseTopLeft() {
+      if (topSqr.style.backgroundColor && leftSqr.style.backgroundColor) {
+        leftTopSqr = undefined;
+      }
+    }
+    function caseTopRight() {
+      if (topSqr.style.backgroundColor && rightSqr.style.backgroundColor) {
+        rightTopSqr = undefined;
+      }
+    }
+
+    function caseBotLeft() {
+      if (leftSqr.style.backgroundColor && botSqr.style.backgroundColor) {
+        leftBotSqr = undefined;
+      }
+    }
+
+    function caseBotRight() {
+      if (botSqr.style.backgroundColor && rightSqr.style.backgroundColor) {
+        rightBotSqr = undefined;
+      }
+    }
+    if (leftSqr === undefined) {
+      if (topSqr === undefined) {
+        caseBotRight();
+      } else if (botSqr === undefined) {
+        caseTopRight();
+      } else {
+        caseTopRight();
+        caseBotRight();
+      }
+    } else if (rightSqr === undefined) {
+      if (topSqr === undefined) {
+        caseBotLeft();
+      } else if (botSqr === undefined) {
+        caseTopLeft();
+      } else {
+        caseTopLeft();
+        caseBotLeft();
+      }
+    } else if (topSqr === undefined) {
+      caseBotRight();
+      caseBotLeft();
+    } else if (botSqr === undefined) {
+      caseTopRight();
+      caseTopLeft();
+    } else {
+      caseBotLeft();
+      caseBotRight();
+      caseTopLeft();
+      caseTopRight();
+    }
+    let arrs = [
+      _,
       leftTopSqr,
       topSqr,
       rightTopSqr,
@@ -160,41 +214,36 @@ function toFill(event) {
       leftBotSqr,
       leftSqr,
     ];
-    cleanArrs = [];
+    let cleanArrs = [];
     arrs.forEach((arr) => {
-      if (arr !== undefined) {
-        if (!arr.style.backgroundColor) {
-          cleanArrs.push(arr);
-        }
-      }
+      if (arr !== undefined && !arr.style.backgroundColor) cleanArrs.push(arr);
     });
-
     return cleanArrs;
-  };
-  // Fill
-
-  /*
-    Bug : Specific Area not working well .... 
-    */
-  let sqrArr = arrAroundSqr(event);
-  let i = 0;
-  while (i < 10) {
-    sqrArr.forEach((sqr) => {
-      sqr.style.cssText = `background:${squareColor}`;
-      arrAroundSqr(sqr).forEach((_) => {
-        if (!sqrArr.includes(_)) {
-          sqrArr.push(_);
+  }
+  // Fill color for new squares created
+  let arrs = extendSqrs(event);
+  while (true) {
+    arrs.forEach((arr) => {
+      arrs = arrs.filter((e) => e !== arr);
+      arr.style.cssText = `background:${squareColor}`;
+      extendSqrs(arr).forEach((_) => {
+        if (!arrs.includes(_)) {
+          arrs.push(_);
+          _.style.cssText = `background:${squareColor}`;
         }
       });
     });
-    i++;
+    // for end loop if no cell to fill
+    if (arrs.length == 0) {
+      break;
+    }
   }
 }
 
-// Color fill full area
+/* Color fill full area */
 const fullFillBtn = document.querySelector("#fill .full");
 
-// Toggle random
+/* Toggle random */
 const randomBtn = document.querySelector(".random");
 
 function randColor() {
@@ -205,7 +254,7 @@ function randColor() {
   return `rgb(${rdC1}, ${rdC2}, ${rdC3})`;
 }
 
-// Toggle rainbow
+/* Toggle rainbow */
 const rainbowBtn = document.querySelector(".rainbow");
 const rainbowCorArr = [
   "#9400D3",
@@ -220,7 +269,7 @@ const rainbowCorArr = [
 function rainbowColor() {
   return rainbowCorArr[Math.floor(Math.random() * rainbowCorArr.length)];
 }
-// Toggle Lighten & darken
+/* Toggle Lighten & darken */
 const lightenBtn = document.querySelector(".lighten");
 const darkenBtn = document.querySelector(".darken");
 
@@ -234,11 +283,10 @@ function rgbChange(rgb, level) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-// Toggle eraser
+/* Toggle eraser */
 const eraserBtn = document.querySelector(".eraser");
 
-// Clear all (Clear the grid only)
-
+/* Clear all (Clear the grid only) */
 const clearBtn = document.querySelector(".clear");
 function resetAllSquare() {
   squares.forEach((square) => {
@@ -249,7 +297,7 @@ function resetAllSquare() {
 }
 clearBtn.addEventListener("click", resetAllSquare);
 
-// Reset all (Clear grid, pen, background to default)
+/* Reset all (Clear grid, pen, background to default) */
 const resetBtn = document.querySelector(".reset");
 function resetAll(event) {
   bgColor.value = "#ffffff";
@@ -266,7 +314,7 @@ function resetAll(event) {
   gridLines.innerText = "Remove Grid Lines";
 }
 
-// Hold to draw
+/* Hold to draw */
 function toDraw(event) {
   if (event.buttons == 1) {
     event.preventDefault(); // New to learn
@@ -303,10 +351,10 @@ function toDraw(event) {
         rgb = event["target"].style.backgroundColor.match(/\d+/g);
         event["target"].style.cssText = `background:${rgbChange(rgb, -15)}`;
       }
-      // Eraser
+      // Toggle Eraser
     } else if (eraserBtn.classList.contains("btn-on")) {
       if (event["target"].style.cssText) event.target.removeAttribute("style");
-      // Draw  the grid
+      // Draw the square
     } else if (
       event["target"].style.backgroundColor !== hexToRgb(squareColor)
     ) {
@@ -318,7 +366,7 @@ function toDraw(event) {
 grid.addEventListener("mousemove", toDraw);
 grid.addEventListener("mousedown", toDraw);
 
-// Change background & pen color
+/* Change background & pen color */
 let bgColor = document.querySelector("#color-picker-bg");
 let penColor = document.querySelector("#color-picker-pen");
 bgColor.addEventListener("input", () => {
@@ -337,7 +385,7 @@ penColor.addEventListener("input", () => {
   });
 });
 
-// Others function
+/* Others function */
 function hexToRgb(hex) {
   hex = hex.replace("#", "");
   var r = parseInt(hex.substring(0, 2), 16);
