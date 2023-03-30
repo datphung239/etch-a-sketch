@@ -41,7 +41,7 @@ function changeGridSize() {
   // Erase current content
   resetAllSquare();
   // Input changed
-  squaresNumber = this.value;
+  squaresNumber = parseInt(this.value);
   if (squaresNumber === undefined) {
     squaresNumber = 30; // For reset default
     gridSizeBar.value = "30";
@@ -129,6 +129,7 @@ const areaFill = document.querySelector(".area");
 function toFill(event) {
   function extendSqrs(_) {
     const squareIdx = Array.from(_.parentElement.children).indexOf(_);
+    console.log(squareIdx, squaresNumber);
     topSqr = squares[squareIdx - squaresNumber];
     botSqr = squares[squareIdx + squaresNumber];
     leftTopSqr = squares[squareIdx - squaresNumber - 1];
