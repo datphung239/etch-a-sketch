@@ -46,7 +46,7 @@ function changeGridSize() {
   resetAllSquare();
   // Input changed
   squaresNumber = parseInt(this.value);
-  if (squaresNumber === undefined) {
+  if (isNaN(squaresNumber)) {
     squaresNumber = 30;
     gridSizeBar.value = "30";
   }
