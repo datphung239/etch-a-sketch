@@ -114,8 +114,10 @@ function buttonOnOff(event) {
     addGridLines();
   }
   // Remove current clicked pen if double click
-  if (toggleBtn.classList.contains("btn-on"))
+  if (toggleBtn.classList.contains("btn-on")) {
     toggleBtn.classList.remove("btn-on");
+    return;
+  }
   // Delete all pen with button on (Reset)
   resetAllBtn(event.target);
   // Then turn button on for current clicked pen
