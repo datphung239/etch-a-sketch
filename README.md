@@ -5,8 +5,8 @@ Project to create something like Etch A Sketch toy.
 🔗 Live preview: [here :blush:](https://datphung239.github.io/etch-a-sketch/)
 
 ## How to play?
-- Choose your favorite the color and background (Default for black & white), then hold the mouse to paint
-- Functionality
+- Choose your favorite the color and background (Default for black & white), then hold the mouse inside the grid to paint
+- Features
   - Clear: Clear the board
   - Reset: Reset all to default
   - Toggle `random` & `rainbow` button the pixels color will be random
